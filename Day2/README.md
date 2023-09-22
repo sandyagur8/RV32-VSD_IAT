@@ -274,15 +274,15 @@ Since there are only limitted number of registers we store data on memory which 
   - We need to get the first address of the memory
   - load in ISA is 
     * ld    x8,16(x23) 
-  // add images of the instruction
+  
 
   - Add in ISA is
     
     * add x8,x24,x8
-  // add images of the instruction
+
   - store in ISA is 
     * sd x8,8(x23)
-  //add images of the instruction
+![image](all%20ISA.png)
 
   OPCODE + Function calls will tell the computer what to do.
 
@@ -320,7 +320,7 @@ Since there are only limitted number of registers we store data on memory which 
 
 Now we take a new approach to solve our previous sum to n problem. The detailed flow chart can be seen here
 
-//include flow chart
+![image](Day%202%20New%20algorithm.png)
 
 We are writing c code and assemble code in separate files. C code goes like this
 
@@ -361,9 +361,21 @@ So the new command would be
 ```bash
 riscv64-unknow-elf-gcc -Ofast -mapi=lp64 -march=rv64i -o sum9.o sumto9_custom.c load.s
 ```
+
+View the output using the same spike command as we did before
+
+![image](Day%202%20lab%202%20new%20log%20compilation%20output.png)
+
 Disassembly and debug commands are same as before.
 
-// output windows images
+These are the instruction set for main function
+
+![image](day2%20lab%20main%20function%20opcode%20debug.png)
+
+These are the instruction set for load and loop subroutine
+
+![image](day2%20lab%20Load%20and%20loop%20subroutine.png)
+
 
 ### Day 2 Lab 2 Basic Verification Flow Of Verilog
 
@@ -388,3 +400,5 @@ chmod 777 rv32im.sh
 ```
 
 This produces an output similar to running the code on the riscv core.
+
+![image](Day%202%20lab%202%20output.png)
