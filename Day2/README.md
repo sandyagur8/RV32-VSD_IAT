@@ -65,6 +65,9 @@ OPCODES again are also not a complete solution since its lack of readability, an
 
 // add image of flow
 
+**Compiler**: Converts the given code into instruction set. These depends on the hardware architecture.
+**Assembler**: Assembler converts the instruction set into machine readable binary code.
+
 #### RISC-V ISA
 As i have mentioned before RISC-V is the first opensource instruction set architecture this gave rise to many fabless semiconductor startups.
 
