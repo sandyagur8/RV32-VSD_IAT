@@ -63,7 +63,7 @@ Instruction Set Architecture (ISA) is the total architecture that encompasses th
 #### Layers In Between Code And Hardware
 OPCODES again are also not a complete solution since its lack of readability, and complexity when it comes to building large programs. So High level languages like C/C++, JAVA started emerging, but machines never understand these codes. So multiple interfaces have to be built in between these codes and hardware. The basic flow is illustrated in the given image.
 
-// add image of flow
+![image](Day2/From%20apps%20to%20hardware%20flow.png)
 
 **Compiler**: Converts the given code into instruction set. These depends on the hardware architecture.
 **Assembler**: Assembler converts the instruction set into machine readable binary code.
@@ -116,7 +116,7 @@ Lets breakdown the code to understand whats happening Here
 - **-o sum.o** : This indicates the name of the output file. The name in this case is sum.o. 
 - **sum1ton.c** : This is the name of file where we have written c code.
 
-The one of  difference between gcc and RV-gcc is that output of the gcc is **.exe** while that of RV-gcc is **.o**
+The one of  difference between gcc and RV-gcc is that output of the gcc is **.exe** in windows and **.out**  on linux while that of RV-gcc is **.o**
 
 // add image of the compiled  page
 
