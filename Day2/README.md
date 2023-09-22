@@ -106,10 +106,10 @@ return 0;
 Use the following code for compiling
 
 ```bash
-rv64v-unknown-elf-gcc -O1 -mabi=lp64 -march=rv64i -o sum.o sum1ton.c
+riscv64-unknown-elf-gcc -O1 -mabi=lp64 -march=rv64i -o sum.o sum1ton.c
 ```
 Lets breakdown the code to understand whats happening Here
- - **rv64v-unknown-elf-gcc** : This is the RV gnu c compiler used to compile the c code with RV tools. There are few other tools also in the directory like *rv64-unknown-elf-objdump* onto which we will come later.
+ - **riscv64-unknown-elf-gcc** : This is the RV gnu c compiler used to compile the c code with RV tools. There are few other tools also in the directory like *rv64-unknown-elf-objdump* onto which we will come later.
  - **-O1** : Is a option switch which can be used to optimize the compilation. This has serious implications on the output of the compiler. O1 is the least optimized and it goes on different levels like O-2, O-3. Ofast is another switch which we use frequently. Different switches produce different number of opcodes.
 - **-mabi** : Here we declare the Application Binary Interface for the compiler. Its using lp64 which stands for **long pointer 64 ** which simply means that the long integers and pointers are of 64 bit.
 - **-march** : This is the area where we specify the architecture of out cpu. Recollect what we have discussed above. here we are using **rv64i** which is the base integer ISA
@@ -117,8 +117,6 @@ Lets breakdown the code to understand whats happening Here
 - **sum1ton.c** : This is the name of file where we have written c code.
 
 The one of  difference between gcc and RV-gcc is that output of the gcc is **.exe** in windows and **.out**  on linux while that of RV-gcc is **.o**
-
-// add image of the compiled  page
 
 We can disassemble the output file and can see the  opcodes of the code that we have written.
  To disassemble use this command
@@ -130,7 +128,7 @@ We can disassemble the output file and can see the  opcodes of the code that we 
  - **-d** : This argument stands for disassembly instruction.
 
 Output of the disassembly can be seen here
- //Output of the disassebly image
+ ![image](main%20funtion%20file%20instruction%20set%20day%201.png)
 
 To display our output on our console we can use the following command
  
@@ -141,7 +139,7 @@ spike pk sum.o
 
 - **pk** : It stands for Proxy Kernal it serves as an interface between actual machine and simulated environment.
 
-//add output image of the command
+![image](day%201%20sum%209%20output.png)
 
 Debugging can also be done by running the code line by line using spike. Use the following command
 
@@ -150,7 +148,7 @@ spike -d pk sum.o
 ```
 **-d** : Stands for debug.
 
-//add image of debug window
+![image](day1%20debug%20window.png)
 
 If you want to start debugging from a specific address you can use the following code after entering the above code 
 
@@ -162,7 +160,7 @@ To know contents of the register use
 ```bash
 reg 0 [register name]
 ```
-//image of debug window
+![image](contents%20of%20register.png)
 
 ## Integer Number Representaion
 ### 64 bit number system for Unsigned Integers
@@ -230,7 +228,7 @@ return 0;
 }
 ```
 
-//include images of output of largest number
+![image](day%201%20largest%20unsigned%20integer.png)
 
 Code for viewing the largest and lowest signed integer
 
@@ -245,7 +243,7 @@ printf("Minimum long long int number is %lld",min);
 return 0;
 }
 ```
-//include image of the output
+![image](maximum%20and%20minimum%20day1.png)
 
 
 The error with code shown in the video was with line 4 and 5 instead of **long long int** it was given just **int**.
