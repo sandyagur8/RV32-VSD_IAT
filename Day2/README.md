@@ -63,7 +63,7 @@ Instruction Set Architecture (ISA) is the total architecture that encompasses th
 #### Layers In Between Code And Hardware
 OPCODES again are also not a complete solution since its lack of readability, and complexity when it comes to building large programs. So High level languages like C/C++, JAVA started emerging, but machines never understand these codes. So multiple interfaces have to be built in between these codes and hardware. The basic flow is illustrated in the given image.
 
-![image](Day2/From%20apps%20to%20hardware%20flow.png)
+![image](From%20apps%20to%20hardware%20flow.png)
 
 **Compiler**: Converts the given code into instruction set. These depends on the hardware architecture.
 **Assembler**: Assembler converts the instruction set into machine readable binary code.
