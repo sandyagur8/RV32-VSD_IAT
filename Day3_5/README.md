@@ -1,5 +1,20 @@
 # Risc-V Based Myth - Day 3
 Day 3 of the workshop conducted by kunal ghosh and steve hoover.
+
+- [Risc-V Based Myth - Day 3](#risc-v-based-myth---day-3)
+  - [TL- verilog](#tl--verilog)
+  - [Combinational Logic](#combinational-logic)
+    - [Basic Combinational Elements](#basic-combinational-elements)
+      - [Logic gates](#logic-gates)
+      - [MUX - Multiplexer](#mux---multiplexer)
+  - [Sequential Logic](#sequential-logic)
+    - [Basic Sequential Elements](#basic-sequential-elements)
+      - [Flip Flop](#flip-flop)
+  - [Pipeline](#pipeline)
+  - [Validity](#validity)
+    - [Benefits of validity](#benefits-of-validity)
+  - [Lab Codes And Screenshots](#lab-codes-and-screenshots)
+  - 
 ## TL- verilog
 It stands for Transaction level verilog, it is an extended library of verilog itself with advanced functionalities like validity checking.
 ## Combinational Logic
