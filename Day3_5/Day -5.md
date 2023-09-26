@@ -1,4 +1,7 @@
 # Day 5 
+
+![image](Before%20addressing%20hazard.png)
+
 ## Code for execution in on cycle
 ```bash
 \m4_TLV_version 1d: tl-x.org
