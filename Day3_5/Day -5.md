@@ -306,6 +306,8 @@
          $src2_value[31:0] = >>1$rf_wr_en && (>>1$rf_wr_index == $rs2) ? (>>1$result) : $rf_rd_data2;
       @3
          //ALu
+         $sltu_rslt[31:0] = $src1_value < $src2_value;
+         $sltiu_rslt[31:0]  = $src1_value < $imm;
          $result[31:0] = 
                          $is_addi ? ($src1_value + $imm) :
                          $is_add ? ($src1_value + $src2_value):
@@ -377,5 +379,6 @@
    m4+cpu_viz(@4)    // For visualisation, argument should be at least equal to the last stage of CPU logic. @4 would work for all labs.
 \SV
    endmodule
+
 
 ```
