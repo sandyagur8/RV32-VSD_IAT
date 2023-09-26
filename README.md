@@ -1,6 +1,9 @@
-[![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-718a45dd9cf7e7f842a935f5ebbe5719a5e09af4491e668f4dbf3b35d5cca122.svg)](https://classroom.github.com/online_ide?assignment_repo_id=11999146&assignment_repo_type=AssignmentRepo)
-# RISC-V_MYTH_Workshop
+-[DAY-1 and Day-2] (Day2/README.md)
 
-For students of "Microprocessor for You in Thirty Hours" Workshop, offered by for VLSI System Design (VSD) and Redwood EDA, find here accompanying live info and links.
+-[Day-3](Day3_5/Day-3.md)
 
-Check the folders for assignments for particular days.
+-[Day-4](Day3_5/Day-4.md)
+
+-[Day-5](Day3_5/Day%20-5.md)
+
+Thankyou
