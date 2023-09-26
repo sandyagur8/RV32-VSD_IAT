@@ -1,4 +1,4 @@
--[DAY-1 and Day-2] (Day2/README.md)
+-[DAY-1 and Day-2](Day2/README.md)
 
 -[Day-3](Day3_5/Day-3.md)
 
