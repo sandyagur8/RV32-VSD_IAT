@@ -40,13 +40,20 @@
    |cpu
       @0
          $reset = *reset;
-         $pc[31:0] = >>1$reset ? 32'd0 : ( >>1$taken_branch ? >>1$br_tgt_pc : (>>1$pc + 32'd4));
-      @1 
+         $start = (>>1$reset && !$reset) ;
+         $pc[31:0] = >>1$reset ? 32'd0 :
+                       (>>3$valid_taken_branch ? >>3$br_tgt_pc :
+                       (>>3$valid_load ? >>3$pc+32'd4 :
+                       ((>>3$valid_jump && >>3$is_jal) ? >>3$br_tgt_pc :
+                       (>>3$valid_jump && >>3$is_jalr) ? >>3$jalr_tgt_pc :
+                       (>>1$pc + 32'd4));
+         
+      @1  
          
          $imem_rd_en = !$reset;
          $imem_rd_addr[M4_IMEM_INDEX_CNT-1 : 0] = $pc[M4_IMEM_INDEX_CNT + 1 :2] ;
          $instr[31:0] = $imem_rd_en ? $imem_rd_data[31:0] : 32'b0;
-         
+      
          $is_i_instr = $instr[6:2] ==? 5'b0000x ||
                        $instr[6:2] ==? 5'b001x0 ||
                        $instr[6:2] ==? 5'b11001 ||
@@ -97,22 +104,84 @@
          $is_bgeu = $dec_vector ==? 11'bx_111_1100011;
          $is_addi = $dec_vector ==? 11'bx_000_0010011;
          $is_add = $dec_vector ==? 11'b0_000_0110011;
+         $is_lui = $dec_vector ==? 11'bx_xxx_0110111;
+         $is_auipc = $dec_vector ==? 11'bx_xxx_0010111;
+         $is_jalr = $dec_vector ==? 11'bx_000_1100111;
+         $is_lb = $dec_vector ==? 11'bx_000_0000011;
+         $is_lh = $dec_vector ==? 11'bx_001_0000011;
+         $is_lw = $dec_vector ==? 11'bx_010_0000011;
+         $is_lbu = $dec_vector ==? 11'bx_100_0000011;
+         $is_lhu = $dec_vector ==? 11'bx_101_0000011;
+         $is_sb = $dec_vector ==? 11'bx_000_0100011;
+         $is_sh = $dec_vector ==? 11'bx_001_0100011;
+         $is_sw = $dec_vector ==? 11'bx_010_0100011;
+         $is_lb = $dec_vector ==? 11'bx_000_0000011;
+         $is_slti = $dec_vector ==? 11'bx_010_0010011;
+         $is_sltiu = $dec_vector ==? 11'bx_011_0010011;
+         $is_xori = $dec_vector ==? 11'bx_100_0010011;
+         $is_ori = $dec_vector ==? 11'bx_110_0010011;
+         $is_andi = $dec_vector ==? 11'bx_111_0010011;
+         $is_slli = $dec_vector ==? 11'b0_001_0010011;
+         $is_srli = $dec_vector ==? 11'b0_101_0010011;
+         $is_srai = $dec_vector ==? 11'b1_101_0010011;
+         $is_sub = $dec_vector ==? 11'b1_000_0110011;
+         $is_sll = $dec_vector ==? 11'b0_001_0110011;
+         $is_slt = $dec_vector ==? 11'b0_010_0110011;
+         $is_sltu = $dec_vector ==? 11'b0_011_0110011;
+         $is_xor = $dec_vector ==? 11'b0_100_0110011;
+         $is_srl = $dec_vector ==? 11'b0_101_0110011;
+         $is_sra = $dec_vector ==? 11'b1_101_0110011;
+         $is_or = $dec_vector ==? 11'b0_110_0110011;
+         $is_and = $dec_vector ==? 11'b0_111_0110011;
+         
+         
+      @2
          //Register
          $rf_rd_en1 = $rs1_valid;
          $rf_rd_index1[4:0] = $rs1;
          $rf_rd_en2 = $rs2_valid;
          $rf_rd_index2[4:0] = $rs2;
-         $src1_value[31:0] = $rf_rd_data1;
-         $src2_value[31:0] = $rf_rd_data2;
+         $src1_value[31:0] = >>1$rf_wr_en && (>>1$rf_wr_index == $rs1) ? (>>1$result) : $rf_rd_data1;
+         $src2_value[31:0] = >>1$rf_wr_en && (>>1$rf_wr_index == $rs2) ? (>>1$result) : $rf_rd_data2;
+      @3
          //ALu
-         $result[31:0] = $is_addi ? ($src1_value + $imm) : 
+         $sltu_rslt[31:0] = $src1_value < $src2_value;
+         $sltiu_rslt[31:0]  = $src1_value < $imm;
+         $result[31:0] = 
+                         $is_addi ? ($src1_value + $imm) :
                          $is_add ? ($src1_value + $src2_value):
+                         $is_andi ? $src1_value & $imm :
+                         $is_ori  ? $src1_value | $imm :
+                         $is_xori ? $src1_value ^ $imm :
+                         $is_slli ? $src1_value << $imm[5:0] :
+                         $is_srli ? $src1_value >> $imm[5:0] :
+                         $is_and ? $src1_value & $src2_value :
+                         $is_or ? $src1_value | $src2_value :
+                         $is_xor ? $src1_value ^ $src2_value :
+                         $is_sub ? $src1_value - $src2_value :
+                         $is_sll ? $src1_value << $src2_value[4:0] :
+                         $is_srl ? $src1_value >> $src2_value[4:0] :
+                         $is_sltu ? $src1_value < $src2_value :
+                         $is_sltiu ? $src1_value < $imm :
+                         $is_lui ? {$imm[31:12], 12'b0} :
+                         $is_auipc ? $pc + $imm :
+                         $is_jal ? $pc + 32'd4 :
+                         $is_jalr ? $pc + 32'd4 :
+                         $is_srai ? {{32{$src1_value[31]}}, $src1_value} >> $imm[4:0] :
+                         $is_slt ? ($src1_value[31] == $src2_value[31]) ? $sltu_rslt : {31'b0, $src1_value[31]} :
+                         $is_slti ? ($src1_value[31] == $imm[31]) ? $sltiu_rslt : {31'b0, $src1_value[31]} :
+                         $is_sra ? {{32{$src1_value[31]}}, $src1_value} >> $src2_value[4:0] :
+                         $is_load || $is_s_instr ? $src1_value + $imm :
                          32'bx;
+         $valid = !(>>1$valid_taken_branch || >>2$valid_taken_branch || >>1$valid_load || >>2$valid_load || >>1$valid_jump || >>2$valid_jump );
+         $valid_jump = $valid && $is_jump;
+         $jalr_tgt_pc[31:0] = $src1_value + $imm ;
+         $valid_load = $valid && $is_load ;
          // Write
-         $rf_wr_en = $rd_valid && ($rd != 5'b0);
-         $rf_wr_index[4:0] = $rd;
-         $rf_wr_data[31:0] = $result;
-         
+         $rf_wr_en = $rf_wr_en_1 && ($valid ||>>2$valid_load);
+         $rf_wr_index[4:0] = >>2$valid_load ? >>2$rd : $rd ;
+         $rf_wr_data[31:0] = >>2$valid_load ? >>2$ld_data : $result;
+      
          //Branching
          $taken_branch = $is_beq ? ($src1_value == $src2_value) :
                          $is_bne ? ($src1_value != $src2_value) :
@@ -120,8 +189,17 @@
                          $is_bge ? (($src1_value >= $src2_value) ^ ($src1_value[31] != $src2_value[31])) :
                          $is_bltu ? ($src1_value < $src2_value) :
                          $is_bgeu ? ($src1_value >= $src2_value) : 1'b0;
-         $br_tgt_pc[31:0] = ( $pc + $imm );  
-         *passed = |cpu/xreg[10]>>5$value == (1+2+3+4+5+6+7+8+9);
+         $br_tgt_pc[31:0] = ( $pc + $imm );
+         $valid_taken_branch = ($valid && $taken_branch) ;
+      @4
+         $dmem_wr_en = $is_s_instr && $valid ;
+         $dmem_addr[3:0] = $result[5:2];
+         $dmem_wr_data[31:0] = $src2_value ;
+         $dmem_rd_en = $is_load ;
+         $ld_data[31:0] = $dmem_rd_data ;
+   m4_asm(SW, r0, r10, 100)
+   m4_asm(LW, r15, r0, 100)
+         
       
 
       // YOUR CODE HERE
@@ -133,7 +211,7 @@
 
    
    // Assert these to end simulation (before Makerchip cycle limit).
-   
+   *passed = |cpu/xreg[15]>>5$value == (1+2+3+4+5+6+7+8+9); 
    *failed = 1'b0;
    
    // Macro instantiations for:
@@ -143,9 +221,9 @@
    //  o CPU visualization
    |cpu
       m4+imem(@1)    // Args: (read stage)
-      m4+rf(@1, @1)  // Args: (read stage, write stage) - if equal, no register bypass is required
-      //m4+dmem(@4)    // Args: (read/write stage)
-      //m4+myth_fpga(@0)  // Uncomment to run on fpga
+      m4+rf(@2, @3)  // Args: (read stage, write stage) - if equal, no register bypass is required
+      m4+dmem(@4)    // Args: (read/write stage)
+      m4+myth_fpga(@0)  // Uncomment to run on fpga
 
    m4+cpu_viz(@4)    // For visualisation, argument should be at least equal to the last stage of CPU logic. @4 would work for all labs.
 \SV
